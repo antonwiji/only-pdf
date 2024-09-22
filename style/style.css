@@ -34,3 +34,15 @@
     align-items: center;
     flex-direction: column;
 } */
+.delete-button {
+    position: absolute;
+    right: 0;
+    top: -4px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 99;
+}
+
+.delete-button:hover {
+    color: rgb(173, 7, 7);
+}

@@ -74,7 +74,6 @@ function downloadPDF(base64Data, fileName) {
 
             document.body.removeChild(link);
         } catch (error) {
-            console.error('Error during file download:', error);
         }
 }
 
@@ -83,50 +82,32 @@ const form = document.getElementById('pdf-file')
 let draggedItem = null;
 let placeholder = null;
 let fileList = [];
+let fileListResult = []
 
 const fileContainer = document.getElementById('pdf-view');
 
-form.addEventListener('change', async() => {
-    
-    fileList = Array.from(form.files)
+async function updateComponent() {
 
     const contentPdf = document.querySelector('#pdf-view')
+    contentPdf.innerHTML = ''
 
-     const convertFile2 = await multiConvertToBase64View(fileList)
+    const convertFile2 = await multiConvertToBase64View(fileList)
 
-     console.log(fileList)
-
-     for (let index = 0; index < convertFile2.length; index++) {
+    for (let index = 0; index < convertFile2.length; index++) {
         contentPdf.insertAdjacentHTML('beforeend',`
-              <div draggable="true" data-index="${index}" class="col file-item" style="padding: 10px;">
-                <div class="card text-center pdf-view">
-                    <div class="card-header">
-                    ${fileList[index].name}(${fileList[index].size}kb)
-                    </div>
-                    <div class="card-body">
-                    <iframe frameborder="0" src="${convertFile2[index]}" id="pdf" style="width: 100%; height: 100%;"></iframe>
-                    </div>
+        <div draggable="true" data-index="${index}" class="col file-item" style="padding: 10px; position: relative;">
+            <span onclick="handleDelete(${index})" class="delete-button"><i class="bi bi-x-circle-fill"></i></span>
+            <div class="card text-center pdf-view">
+                <div class="card-header">
+                ${fileList[index].name}(${fileList[index].size}kb)
                 </div>
-              </div>
+                <div class="card-body">
+                <iframe frameborder="0" src="${convertFile2[index]}" id="pdf" style="width: 100%; height: 100%;"></iframe>
+                </div>
+            </div>
+        </div>
         `)
     }
-
-     const loadPdf = await loadDocumentPdf(convertFile2)
-
-        const pdfDoc = await PDFLib.PDFDocument.create()
-
-        for (let index = 0; index < loadPdf.length; index++) {
-            const pageIndices = loadPdf[index].getPageIndices()
-            const copiedPages = await pdfDoc.copyPages(loadPdf[index], pageIndices)
-    
-            copiedPages.forEach((page) => {
-                pdfDoc.addPage(page);
-            })
-        }
-
-    const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true })
-
-    // Dragger Script
 
     function createPlaceholder() {
         const placeholderDiv = document.createElement('div');
@@ -152,6 +133,7 @@ form.addEventListener('change', async() => {
                 this.classList.remove('dragging');
                 draggedItem = null;
             }, 0);
+
         });
     });
 
@@ -180,54 +162,54 @@ form.addEventListener('change', async() => {
             }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
-    // contentPdf.innerHTML = `
-    // <div class="row row-cols-3">
-    //       <div class="col" style="padding: 10px;">
-    //         <div class="card text-center pdf-view">
-    //             <div class="card-header">
-    //             ${files[0].name}(${files[0].size}kb)
-    //             </div>
-    //             <div class="card-body">
-    //             <iframe src="${pdfDataUri}" id="pdf" style="width: 100%; height: 100%;"></iframe>
-    //             </div>
-    //         </div>
-    //       </div>
-    // </div>
-    // `
+}
 
-
-        // const convertFile2 = await multiConvertToBase64(files)
-        // const loadPdf = await loadDocumentPdf(convertFile2)
-
-        // const pdfDoc = await PDFLib.PDFDocument.create()
-
-        // for (let index = 0; index < loadPdf.length; index++) {
-        //     const pageIndices = loadPdf[index].getPageIndices()
-        //     const copiedPages = await pdfDoc.copyPages(loadPdf[index], pageIndices)
+form.addEventListener('change', async() => {
+   
+    const buttonDownloadPdf = document.getElementById('downloadPdf')
     
-        //     copiedPages.forEach((page) => {
-        //         pdfDoc.addPage(page);
-        //     })
-        // }
+    fileList.push(...Array.from(form.files))
 
-        // const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true })
+    await updateComponent()
+    
+    buttonDownloadPdf.addEventListener('click', async() => {
+        const convertFileToDownload = await multiConvertToBase64View(fileListResult)
 
-        // downloadPDF(pdfDataUri, 'download-file.pdf')
+        const loadPdf = await loadDocumentPdf(convertFileToDownload)
+
+        const pdfDoc = await PDFLib.PDFDocument.create()
+
+        for (let index = 0; index < loadPdf.length; index++) {
+            const pageIndices = loadPdf[index].getPageIndices()
+            const copiedPages = await pdfDoc.copyPages(loadPdf[index], pageIndices)
+    
+            copiedPages.forEach((page) => {
+                pdfDoc.addPage(page);
+            })
+        }
+        updateFileOrder()
+        const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true })
+        downloadPDF(pdfDataUri, 'pdf-download.pdf')
+    })
+
+    // Dragger Script
 
 })
 
 function updateFileOrder() {
     const newOrder = [...fileContainer.querySelectorAll('.file-item')].map(item => {
-        console.log(item)
-        console.log(item.dataset.index)
         return fileList[item.dataset.index];
     });
-    console.log(newOrder)
-    fileList = newOrder; // Perbarui urutan fileList sesuai urutan visual
+
+    fileListResult = newOrder; // Perbarui urutan fileList sesuai urutan visual
 }
 
 function testKlik() {
     updateFileOrder()
-    console.log(fileList)
+}
+
+async function handleDelete(index) {
+    fileList.splice(index, 1)
+    updateComponent()
 }
 
