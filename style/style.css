@@ -1,0 +1,48 @@
+.pdf-view {
+    height: 60vh;
+}
+.file-item {
+    padding: 15px 10px;
+    text-align: center;
+    cursor: grab;
+    background-color: #f9f9f9;
+    user-select: none; /* Mencegah teks terseleksi saat drag */
+}
+.file-item.dragging {
+    opacity: 0.5;
+}
+.placeholder {
+    background-color: #e0e0e0;
+    border: 2px dashed #aaa;
+}
+/* .pdf-upload {
+    width: 70%;
+    height: 40vh;
+    border: 4px dashed #6a6a6a;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    align-items: center;
+}
+.content {
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+} */
+.delete-button {
+    position: absolute;
+    right: 0;
+    top: -4px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 99;
+}
+
+.delete-button:hover {
+    color: rgb(173, 7, 7);
+}
