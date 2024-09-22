@@ -34,6 +34,11 @@
     align-items: center;
     flex-direction: column;
 } */
+.content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
 .delete-button {
     position: absolute;
     right: 0;
@@ -45,4 +50,24 @@
 
 .delete-button:hover {
     color: rgb(173, 7, 7);
+}
+
+.upload-file {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 160px;
+    height: 160px;
+    background-color: #c8c5c5;
+    border: 2px dashed #929292;
+    border-radius: 10px;
+    color: #7a7a86;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.upload-file:hover {
+    border-color: #3f3f3f;
+    color: #3f3f3f;
 }

@@ -44,19 +44,33 @@
     <div class="container">
     <div class="content">
       <form id="form-upload-file">
-          <input id="pdf-file" type="file" multiple/>
+          <input hidden id="pdf-file" type="file" multiple/>
       </form>
+      <div class="upload-file">
+        <i class="bi bi-upload"></i>
+        <p>Upload PDF</p>
+      </div>
       <div class="pdf-upload">
-        <div>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius iste molestias voluptates modi iusto veniam facilis quos dignissimos quae cum.
-        </div>
       </div>
       <div class="content-pdf">
         <div id="pdf-view" class="row row-cols-4">
           <!-- content pdf -->
         </div>
       </div>
-      <button id="downloadPdf" onclick="testKlik()">Testing</button>
+    </div>
+    <div class="handle-action">
+      <div class="row">
+        <div class="col-6">
+          <div class="d-grid">
+            <button class="btn btn-success" id="downloadPdf">Download Pdf</button>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="d-grid">
+            <button class="btn btn-danger" id="resetPdf">Reset</button>
+          </div>
+        </div>
+      </div>
     </div>
     </div>
   </body>

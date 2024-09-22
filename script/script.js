@@ -164,6 +164,14 @@ async function updateComponent() {
     }
 }
 
+function updateFileOrder() {
+    const newOrder = [...fileContainer.querySelectorAll('.file-item')].map(item => {
+        return fileList[item.dataset.index];
+    });
+
+    fileListResult = newOrder; // Perbarui urutan fileList sesuai urutan visual
+}
+
 form.addEventListener('change', async() => {
    
     const buttonDownloadPdf = document.getElementById('downloadPdf')
@@ -173,6 +181,8 @@ form.addEventListener('change', async() => {
     await updateComponent()
     
     buttonDownloadPdf.addEventListener('click', async() => {
+
+        updateFileOrder()
         const convertFileToDownload = await multiConvertToBase64View(fileListResult)
 
         const loadPdf = await loadDocumentPdf(convertFileToDownload)
@@ -187,26 +197,17 @@ form.addEventListener('change', async() => {
                 pdfDoc.addPage(page);
             })
         }
-        updateFileOrder()
         const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true })
         downloadPDF(pdfDataUri, 'pdf-download.pdf')
     })
-
-    // Dragger Script
-
+    
 })
 
-function updateFileOrder() {
-    const newOrder = [...fileContainer.querySelectorAll('.file-item')].map(item => {
-        return fileList[item.dataset.index];
-    });
+const handleFile = document.querySelector(".upload-file")
 
-    fileListResult = newOrder; // Perbarui urutan fileList sesuai urutan visual
-}
-
-function testKlik() {
-    updateFileOrder()
-}
+handleFile.addEventListener('click', () => {
+    form.click()
+})
 
 async function handleDelete(index) {
     fileList.splice(index, 1)
